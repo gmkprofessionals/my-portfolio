@@ -19,6 +19,52 @@
   }
 }
 
+.whatsapp {
+  background: linear-gradient(135deg, #1E3A8A, #3B82F6); /* deep blue to light blue */
+}
+
+.h1-heading {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2.25rem;      /* equivalent to Tailwind's text-3xl */
+  font-weight: 700;        /* bold */
+  color: #1e3a8a;          /* Tailwind's text-blue-800 */
+}
+
+
+.btnLeft {
+  background-color: #1e40af; /* Tailwind bg-blue-800 */
+  color: white;              /* text-white */
+  padding: 0.75rem 1.5rem;   /* py-3 px-6 */
+  border-radius: 0.5rem;     /* rounded-lg */
+  font-weight: 500;          /* font-medium */
+  transition: all 0.3s ease; /* transition-all */
+  cursor: pointer;
+}
+
+.btnLeft:hover {
+  background-color: #3b82f6; /* Tailwind hover:bg-blue-500 */
+}
+
+.footer-heading {
+  font-size: 1.5rem;        /* text-3xl */
+  color: yellow;
+  margin-bottom: 1.5rem;
+  font-family: 'Oswald';
+  font-weight: 600;
+}
+
+.inputBox {
+  padding: 9px 16px;
+  border: 1.5px solid #2563eb;   /* Tailwind's blue-600 */
+  border-radius: 4px;
+}
+
+.inputBox:focus {
+  outline: 1.5px solid #2563eb;  /* blue-600 */
+  background-color: #e0edff;     /* light blue shade */
+}
+
+
 body {
   background: var(--background);
   color: var(--foreground);

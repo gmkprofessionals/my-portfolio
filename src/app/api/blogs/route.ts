@@ -4,7 +4,7 @@ import Blogs from "../../../../Modals/Blogs";
 import dbConnect from "../../../../dbConnect";
 import mongoose from "mongoose";
 
-export type BlogType = {
+type BlogType = {
   title: string;
   slug: string;
   content: string;
@@ -14,7 +14,6 @@ export type BlogType = {
   featuredImage?: string;
   isPublished?: boolean;
 };
-
 
 export async function GET(){
 

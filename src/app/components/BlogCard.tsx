@@ -1,77 +1,92 @@
 'use client';
+
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation'; // ✅ Import router
 import InnerBanner from '../components/InnerBanner';
 import Container from '../components/Container';
 import Footer from '../components/Footer';
 
 interface BlogPost {
-  id: number;
+  _id: string;
   title: string;
-  summary: string;
-  image: string;
-  date: string;
   slug: string;
+  content: string;
+  category: string;
+  tags: string[];
+  featuredImage?: string;
+  createdAt: string;
 }
 
-const initialPosts: BlogPost[] = [
-  {
-    id: 1,
-    title: 'Understanding GST Filing: A Complete Guide for Indian Businesses',
-    summary: 'Learn the basics of GST filing, due dates, and common mistakes to avoid for smoother compliance.',
-    image: '/blog/gst-filing.jpg',
-    date: 'July 10, 2025',
-    slug: 'understanding-gst-filing',
-  },
-  {
-    id: 2,
-    title: 'Benefits of MSME Registration You Shouldn’t Miss',
-    summary: 'Explore how MSME registration can offer tax benefits, easier loans, and government support.',
-    image: '/blog/msme-benefits.jpg',
-    date: 'July 5, 2025',
-    slug: 'benefits-of-msme-registration',
-  },
-  {
-    id: 3,
-    title: 'Trademark vs Copyright: What Should Your Business Register?',
-    summary: 'A quick breakdown of what’s best for your brand identity and how to legally protect your IP.',
-    image: '/blog/trademark-vs-copyright.jpg',
-    date: 'June 25, 2025',
-    slug: 'trademark-vs-copyright',
-  },
-];
+const BlogCard: React.FC = () => {
+  const router = useRouter(); // Use router hook
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-const BlogCard :React.FC = () => {
-  
-  const [posts] = useState<BlogPost[]>(initialPosts);
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await fetch('/api/blogs');
+        const data = await res.json();
+
+        if (data.success) {
+          setPosts(data.blgList);
+        } else {
+          setError(data.msg || 'Failed to load blogs.');
+        }
+      } catch (err) {
+        console.error('Error fetching blogs:', err);
+        setError('An unexpected error occurred while loading blogs.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
 
   return (
     <div>
       <InnerBanner />
       <Container>
-        <h2 className='h1-heading mb-9'>Blogs</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-9 mb-16">
+        <h2 className="h1-heading mb-9">Blogs</h2>
+
+        {loading ? (
+          <p>Loading blogs...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-9 mb-16">
             {posts.map((post) => (
               <div
-                key={post.id}
+                key={post._id}
                 className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden"
               >
                 <Image
-                  src={post.image}
+                  src={post.featuredImage || '/blog/default.jpg'}
                   alt={post.title}
                   width={350}
                   height={200}
                   className="w-full h-48 object-cover"
                 />
-                <div className="p-9 ">
-                  <p className="text-sm text-gray-500 mb-2">{post.date}</p>
+                <div className="p-9">
+                  <p className="text-sm text-gray-500 mb-2">
+                    {new Date(post.createdAt).toLocaleDateString('en-IN', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </p>
                   <h3 className="text-xl font-semibold text-blue-800 mb-3">
                     {post.title}
                   </h3>
-                  <p className="text-gray-700 mb-4">{post.summary}</p>
+                  <p className="text-gray-700 mb-4 line-clamp-3">
+                    {post.content.replace(/<[^>]+>/g, '').slice(0, 150)}...
+                  </p>
                   <button
-                    type='button'
-                    onClick={() => window.location.href = `/blog/${post.slug}`}
+                    type="button"
+                    onClick={() => router.push(`/blogs/${post.slug}`)} // Navigate here
                     className="btnLeft w-full"
                   >
                     Read More
@@ -80,6 +95,7 @@ const BlogCard :React.FC = () => {
               </div>
             ))}
           </div>
+        )}
       </Container>
       <Footer />
     </div>

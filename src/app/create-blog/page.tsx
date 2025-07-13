@@ -26,7 +26,7 @@ export default function WriteBlog() {
     featuredImage: '',
   });
 
-  const [content, setContent] = useState<string>(''); // for tiptap content
+  const [content, setContent] = useState<string>(''); // HTML from TipTap
   const [previewImage, setPreviewImage] = useState<string>('');
 
   const handleChange = (
@@ -42,21 +42,23 @@ export default function WriteBlog() {
     if (!file) return;
     const form = new FormData();
     form.append('file', file);
-    form.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!); // ✅ from .env
+    form.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
+
     try {
       const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}`,
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
         {
           method: 'POST',
           body: form,
         }
       );
       const data = await res.json();
+
       if (data.secure_url) {
         setFormData((prev) => ({ ...prev, featuredImage: data.secure_url }));
         setPreviewImage(data.secure_url);
       } else {
-        toast.error('Image upload failed: No URL returned.');
+        toast.error('Image upload failed: No secure_url returned.');
       }
     } catch {
       toast.error('Image upload failed.');
@@ -66,8 +68,8 @@ export default function WriteBlog() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!content.trim()) {
-      toast.error('Blog content cannot be empty.');
+    if (!formData.title || !formData.slug || !formData.category || !content.trim()) {
+      toast.error('Please fill in all required fields.');
       return;
     }
 
@@ -77,8 +79,8 @@ export default function WriteBlog() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          slug: formData.slug.toLowerCase(),
-          tags: formData.tags.split(',').map((t) => t.trim()),
+          slug: formData.slug.toLowerCase().replace(/\s+/g, '-'),
+          tags: formData.tags.split(',').map(tag => tag.trim()),
           content,
           isPublished: false,
         }),
@@ -87,14 +89,14 @@ export default function WriteBlog() {
       const data = await response.json();
 
       if (data.success) {
-        toast.success(data.msg || 'Blog created successfully');
+        toast.success(data.msg || 'Blog created successfully!');
         router.push('/blogs');
       } else {
-        toast.error(data.msg || 'Error creating blog');
+        toast.error(data.msg || 'Failed to create blog.');
       }
-    } catch (error) {
-      console.error(error);
-      toast.error('Something went wrong while submitting.');
+    } catch (err) {
+      console.error(err);
+      toast.error('Server error. Try again later.');
     }
   };
 
@@ -105,32 +107,34 @@ export default function WriteBlog() {
           onSubmit={handleSubmit}
           className="flex flex-col rounded-lg shadow w-full gap-4 bg-gray-100 p-9 items-center justify-center"
         >
-          {/* Banner Image */}
-          <div className="flex justify-center items-center h-[360px] rounded-sm w-full border-[1.5px] border-blue-500 bg-white p-9">
+          {/* Image Preview */}
+          <div className="flex flex-col items-center w-full">
             {previewImage && (
               <Image
                 src={previewImage}
-                alt="Preview"
+                alt="Blog Banner"
                 width={1200}
                 height={400}
-                className="w-full max-h-64 object-contain border border-blue-500 rounded"
+                className="w-full h-auto max-h-64 object-contain border border-blue-500 rounded mb-2"
               />
             )}
             <input
               type="file"
               accept="image/*"
               onChange={handleImageUpload}
-              className="ml-4"
+              className="mt-2"
             />
           </div>
 
-          {/* Form Inputs */}
+          {/* Form Fields */}
           {['title', 'slug', 'category', 'tags'].map((field) => (
             <input
               key={field}
               type="text"
               name={field}
-              placeholder={field === 'slug' ? 'Slug (URL-friendly)' : field.charAt(0).toUpperCase() + field.slice(1)}
+              placeholder={
+                field === 'slug' ? 'Slug (e.g. how-to-code)' : field.charAt(0).toUpperCase() + field.slice(1)
+              }
               className="w-full p-2 border border-blue-500 rounded bg-white"
               value={(formData as any)[field]}
               onChange={handleChange}
@@ -138,25 +142,25 @@ export default function WriteBlog() {
             />
           ))}
 
-          {/* Tiptap Editor */}
+          {/* HTML Editor */}
           <div className="w-full">
             <Tiptap onContentChange={(html: string) => setContent(html)} />
           </div>
 
           {/* Actions */}
-          <div className="flex gap-1">
+          <div className="flex gap-4">
             <button
               type="submit"
-              className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-500"
+              className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
               Submit
             </button>
             <button
               type="button"
               onClick={() => router.back()}
-              className="bg-white px-4 py-2 border-[1.5px] rounded hover:bg-gray-200"
+              className="bg-white border border-gray-400 px-4 py-2 rounded hover:bg-gray-200"
             >
-              Back
+              Cancel
             </button>
           </div>
         </form>

@@ -8,30 +8,50 @@ type BlogType = {
   title: string;
   slug: string;
   content: string;
-  author: mongoose.Types.ObjectId; 
+  author: mongoose.Types.ObjectId;
   category: string;
-  tags?: string[]; 
+  tags?: string[];
   featuredImage?: string;
   isPublished?: boolean;
 };
 
-export async function GET(){
+export async function GET(req: NextRequest) {
+  
+  try {
 
-    try { 
-      await dbConnect();
-      const blgList: BlogType[] = await Blogs.find()
-      .populate('author', 'usrName')
-      .sort({ createdAt: -1 });
-      
-      if (!blgList) {
-        return NextResponse.json({success:false, msg: "No categories found" }, { status: 404 });
-      } else {
-        return NextResponse.json({ blgList, success: true }, {status:200});
-      }
-    } catch (error) {
-        return new NextResponse("Error while fetching catData: " + error, {status:500});
+    await dbConnect();
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get("search") || "";
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = 100;
+    const skip = (page - 1) * limit;
+
+    const filter: any = {};
+
+    if (search) {
+      filter.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { category: { $regex: search, $options: "i" } },
+      ];
     }
+
+    const [blgList, totalCount] = await Promise.all([
+      Blogs.find(filter)
+        .populate("author", "usrName")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Blogs.countDocuments(filter),
+    ]);
+
+    return NextResponse.json({ success: true, blgList, totalCount });
+  } catch (error) {
+    return new NextResponse("Error while fetching blogs: " + error, {
+      status: 500,
+    });
   }
+}
   
   export async function POST(req: NextRequest) {
   

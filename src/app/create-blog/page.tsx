@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-
 import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -17,8 +16,8 @@ interface BlogFormData {
 }
 
 export default function WriteBlog() {
-  const router = useRouter();
 
+  const router = useRouter();
   const [formData, setFormData] = useState<BlogFormData>({
     title: '',
     slug: '',
@@ -38,9 +37,9 @@ export default function WriteBlog() {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    
     const file = e.target.files?.[0];
     if (!file) return;
-
     const form = new FormData();
     form.append('file', file);
     form.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!); // ✅ from .env

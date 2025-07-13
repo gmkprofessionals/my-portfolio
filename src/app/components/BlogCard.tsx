@@ -42,6 +42,7 @@ const initialPosts: BlogPost[] = [
 ];
 
 const BlogCard :React.FC = () => {
+  
   const [posts] = useState<BlogPost[]>(initialPosts);
 
   return (

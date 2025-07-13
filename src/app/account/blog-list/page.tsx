@@ -42,7 +42,6 @@ const BlogListPage = async ({ searchParams }: PageProps) => {
           <tr className="text-white">
             <th className="p-2 border">Blog Title</th>
             <th className="p-2 border">Category</th>
-            <th className="p-2 border">Created By</th>
             <th className="p-2 border">Published At</th>
             <th className="p-2 border">Actions</th>
           </tr>

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { getBlogs } from '../../../../actions/getBlogs';
 
 const BlogListClient: React.FC = () => {
-
+  
   const searchParams = useSearchParams();
   const router = useRouter();
   const search = searchParams.get('search') || '';
@@ -34,17 +34,23 @@ const BlogListClient: React.FC = () => {
     fetchData();
   }, [search, page]);
 
-  const totalPages = Math.ceil(totalCount / 100);
+  // Debounced search effect
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (query !== search) {
+        router.push(`?search=${query}&page=1`);
+      }
+    }, 400); // debounce delay in ms
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    router.push(`?search=${query}&page=1`);
-  };
+    return () => clearTimeout(delayDebounce);
+  }, [query]);
+
+  const totalPages = Math.ceil(totalCount / 100);
 
   return (
     <div className="p-4 my-10">
-      {/* Search */}
-      <form className="mb-2" onSubmit={handleSearch}>
+      {/* Search Input without form */}
+      <div className="mb-2">
         <input
           type="text"
           name="search"
@@ -53,13 +59,7 @@ const BlogListClient: React.FC = () => {
           placeholder="Search by title or category..."
           className="border-[1.5px] border-blue-500 px-3 py-2 rounded w-64 focus:outline-none"
         />
-        <button
-          type="submit"
-          className="ml-1 px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Search
-        </button>
-      </form>
+      </div>
 
       {/* Table or Loading */}
       {loading ? (
@@ -77,23 +77,22 @@ const BlogListClient: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {blogs.map((blog: any) => (
+              {blogs?.map((blog: any) => (
                 <tr key={blog._id} className="text-center border-t">
-                  <td className="p-2 border">{blog.title}</td>
-                  <td className="p-2 border">{blog.category}</td>
+                  <td className="p-2 border">{blog?.title}</td>
+                  <td className="p-2 border">{blog?.category}</td>
                   <td className="p-2 border">
-                    {blog.publishedAt
+                    {blog?.publishedAt
                       ? new Date(blog.publishedAt).toLocaleDateString()
                       : 'Draft'}
                   </td>
                   <td className="p-2 border">
-                    {blog.author?.usrName || 'Unknown'}
+                    {blog?.author?.usrName || 'Unknown'}
                   </td>
                   <td className="p-2 border space-x-2">
-                    <Link href={`/blogs/${blog._id}`} className="text-blue-600 underline">View</Link>
-                    <Link href={`/blogs/${blog._id}/edit`} className="text-yellow-600 underline">Edit</Link>
-                    <Link href={`/blogs/${blog._id}/publish`} className="text-green-600 underline">Publish</Link>
-                    <Link href={`/blogs/${blog._id}/delete`} className="text-red-600 underline">Delete</Link>
+                    <Link href={`/account/blog-list/${blog._id}/edit-blog`} className="text-yellow-600 underline">Edit</Link>
+                    <Link href={`/account/blog-list${blog._id}/publish-blog`} className="text-green-600 underline">Publish</Link>
+                    <Link href={`/account/blog-list${blog._id}/delete-blog`} className="text-red-600 underline">Delete</Link>
                   </td>
                 </tr>
               ))}

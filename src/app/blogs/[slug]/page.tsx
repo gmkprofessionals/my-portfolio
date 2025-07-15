@@ -1,4 +1,6 @@
-import { notFound } from 'next/navigation';
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Container from "@/app/components/Container";
 
 interface Blog {
   title: string;
@@ -7,50 +9,86 @@ interface Blog {
   category: string;
   tags: string[];
   featuredImage?: string;
-  createdAt: string;
+  publishedAt: string;
 }
 
 const getBlogBySlug = async (slug: string): Promise<Blog | null> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?slug=${slug}`, {
-      cache: 'no-store',
-    });
-    const data = await res.json();
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?slug=${slug}`,
+      {
+        cache: "no-store",
+      }
+    );
 
+    const data = await res.json();
     if (!data.success || !data.blgList?.length) return null;
+
     return data.blgList[0];
-  } catch (err) {
-    console.error('Fetch error:', err);
+  } catch (error) {
+    console.error("Error fetching blog:", error);
     return null;
   }
 };
 
-export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function BlogDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const { slug } = params;
   const blog = await getBlogBySlug(slug);
+
   if (!blog) return notFound();
 
+  const formattedDate = new Date(blog.publishedAt).toLocaleDateString("en-IN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">{blog.title}</h1>
-      <p className="text-sm text-gray-500 mb-6">
-        {new Date(blog.createdAt).toLocaleDateString('en-IN', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
-      </p>
-      {blog.featuredImage && (
-        <img
-          src={blog.featuredImage}
-          alt={blog.title}
-          className="rounded mb-6 w-full max-h-[400px] object-cover"
+    <div className="my-24">
+      <Container>
+        {blog.featuredImage && (
+          <div className="mb-8">
+            <Image
+              src={blog.featuredImage}
+              alt={blog.title}
+              width={1200}
+              height={600}
+              className="rounded-lg shadow-md object-cover w-full h-auto max-h-[500px]"
+              priority
+            />
+          </div>
+        )}
+
+        {/* ✅ Published Date */}
+        <p className="text-sm text-gray-500 mb-3">{formattedDate}</p>
+
+        {/* ✅ Tags */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {blog.tags.map((tag) => (
+            <span
+              key={tag}
+              className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs"
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+
+        {/* ✅ Title */}
+        <h1 className="text-4xl font-bold text-gray-900 leading-tight mb-6">
+          {blog.title}
+        </h1>
+
+        {/* ✅ Content */}
+        <article
+          className="prose prose-lg prose-slate max-w-none"
+          dangerouslySetInnerHTML={{ __html: blog.content }}
         />
-      )}
-      <div
-        className="prose max-w-none"
-        dangerouslySetInnerHTML={{ __html: blog.content }}
-      />
+      </Container>
     </div>
   );
 }

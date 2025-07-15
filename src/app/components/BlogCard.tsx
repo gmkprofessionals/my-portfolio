@@ -1,5 +1,4 @@
 'use client';
-
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'; // ✅ Import router
@@ -53,7 +52,7 @@ const BlogCard: React.FC = () => {
         <h2 className="h1-heading mb-9">Blogs</h2>
 
         {loading ? (
-          <p>Loading blogs...</p>
+          <p className='text-center italic'>Loading blogs...</p>
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (

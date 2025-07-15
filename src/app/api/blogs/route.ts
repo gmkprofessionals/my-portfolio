@@ -11,6 +11,7 @@ type BlogType = {
   author: mongoose.Types.ObjectId;
   category: string;
   tags?: string[];
+  publishedAt:string;
   featuredImage?: string;
   isPublished?: boolean;
 };
@@ -82,6 +83,7 @@ export async function POST(req: NextRequest) {
       tags,
       featuredImage,
       isPublished,
+      publishedAt
     }: BlogType = await req.json();
 
     const blogSlug = slug || slugify(title, { lower: true, strict: true });
@@ -95,7 +97,7 @@ export async function POST(req: NextRequest) {
       tags,
       featuredImage,
       isPublished,
-      publishedAt: isPublished ? new Date() : undefined,
+      publishedAt: isPublished ? (publishedAt ? new Date(publishedAt) : new Date()) : undefined,
     });
 
     const savedBlog = await newBlog.save();

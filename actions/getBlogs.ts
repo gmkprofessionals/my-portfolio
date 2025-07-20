@@ -4,7 +4,7 @@ export const getBlogs = async (search: string, page: number) => {
   if (search) query.set('search', search);
   query.set('page', page.toString());
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/blogs?${query.toString()}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?${query.toString()}`, {
     method: 'GET',
     cache: 'no-store',
   });

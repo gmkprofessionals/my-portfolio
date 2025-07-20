@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const slug = searchParams.get('slug');
+    const isPublished = searchParams.get('isPublished') === 'true';
     const search = searchParams.get('search') || '';
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = 100;
@@ -43,6 +44,10 @@ export async function GET(req: NextRequest) {
 
     // Otherwise, handle search + pagination
     const filter: Record<string, unknown> = {};
+
+    if (isPublished) {
+      filter.isPublished = true;
+    }
 
     if (search) {
       filter.$or = [

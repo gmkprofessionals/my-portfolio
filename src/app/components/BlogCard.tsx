@@ -14,7 +14,7 @@ interface BlogPost {
   category: string;
   tags: string[];
   featuredImage?: string;
-  createdAt: string;
+  publishedAt: string;
 }
 
 const BlogCard: React.FC = () => {
@@ -26,7 +26,7 @@ const BlogCard: React.FC = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch('/api/blogs');
+        const res = await fetch('/api/blogs?isPublished=true');
         const data = await res.json();
 
         if (data.success) {
@@ -71,7 +71,7 @@ const BlogCard: React.FC = () => {
                 />
                 <div className="p-9">
                   <p className="text-sm text-gray-500 mb-2">
-                    {new Date(post.createdAt).toLocaleDateString('en-IN', {
+                    {new Date(post.publishedAt).toLocaleDateString('en-IN', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',

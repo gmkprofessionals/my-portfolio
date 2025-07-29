@@ -144,14 +144,14 @@ const EditBlog: React.FC<IParamsBlog> = ({ params }) => {
         const data = await response.json();
         if (data.success) {
           setFormData({
-            title: data.blog.title,
-            slug: data.blog.slug,
-            category: data.blog.category,
-            tags: data.blog.tags.join(", "),
-            featuredImage: data.blog.featuredImage || "",
+            title: data.blgById.title,
+            slug: data.blgById.slug,
+            category: data.blgById.category,
+            tags: data.blgById.tags.join(", "),
+            featuredImage: data.blgById.featuredImage || "",
           });
-          setContent(data.blog.content);
-          setPreviewImage(data.blog.featuredImage || "");
+          setContent(data.blgById.content);
+          setPreviewImage(data.blgById.featuredImage || "");
         } else {
           setErrorMessage(data.msg || "Failed to load blog data");
         }

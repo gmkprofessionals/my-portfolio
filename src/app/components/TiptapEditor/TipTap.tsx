@@ -10,10 +10,11 @@ import ToolBar from './ToolBar';
 
 interface TiptapProps {
   onContentChange?: (html: string) => void;
+  initialContent?: string;
 }
 
-const Tiptap = ({ onContentChange }: TiptapProps) => {
-  
+const Tiptap = ({ onContentChange, initialContent }: TiptapProps) => {
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -25,7 +26,7 @@ const Tiptap = ({ onContentChange }: TiptapProps) => {
         types: ['heading', 'paragraph'],
       }),
     ],
-    content: '<p>Hello World! 🌎️</p>',
+    content: initialContent || '<p>Hello World! 🌎️</p>',
     editorProps: {
       attributes: {
         class:

@@ -50,7 +50,6 @@ const BlogCard: React.FC = () => {
       <InnerBanner />
       <Container>
         <h2 className="h1-heading mb-9">Blogs</h2>
-
         {loading ? (
           <p className='text-center italic'>Loading blogs...</p>
         ) : error ? (
@@ -95,6 +94,13 @@ const BlogCard: React.FC = () => {
             ))}
           </div>
         )}
+        <button
+          type="button"
+          className="btnLeft my-16 "
+          onClick={() => router.push('/create-blog')}
+        >
+          Write your blog
+        </button>
       </Container>
       <Footer />
     </div>

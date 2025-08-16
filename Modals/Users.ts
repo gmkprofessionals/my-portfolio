@@ -17,6 +17,18 @@ const usersSchema = new mongoose.Schema (
     usrImage: {
       type: String,
     },
+    usrDesignation: {
+      type: String,
+      trim: true,
+    },
+    usrLocation: {
+      type: String,
+      trim: true,
+    },
+    usrPassword: {
+      type: String,
+      trim: true,
+    },
     isActive: {
       type: Boolean,
       default: true,

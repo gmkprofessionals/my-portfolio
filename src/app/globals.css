@@ -50,6 +50,21 @@
   color: #1e40af;      /* Tailwind's text-blue-900 */
 }
 
+.btnRight {
+  background-color: #e5e7eb; /* Tailwind bg-gray-200 */
+  color: black;              /* text-black */
+  padding: 0.75rem 1.5rem;   /* py-3 px-6 */
+  border-radius: 0.5rem;     /* rounded-lg */
+  font-weight: 500;          /* font-medium */
+  transition: all 0.3s ease; /* transition-all */
+  cursor: pointer;
+  border: 1px solid black;   /* border-black */
+}
+
+.btnRight:hover {
+  background-color: #f3f4f6; /* Tailwind hover:bg-gray-100 */
+}
+
 
 .footer-heading {
   font-size: 1.5rem;        /* text-3xl */

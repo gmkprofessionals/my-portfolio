@@ -1,8 +1,8 @@
 'use client';
-
+import { RiLockPasswordFill } from "react-icons/ri";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutList, Users, UserCircle, LogOut } from 'lucide-react';
+import { LayoutList,  UserCircle, LogOut } from 'lucide-react';
 import React from 'react';
 
 const Sidebar: React.FC = () => {
@@ -13,11 +13,6 @@ const Sidebar: React.FC = () => {
       name: 'Blog List',
       icon: <LayoutList size={18} />,
       path: '/account/blog-list',
-    },
-    {
-      name: 'User List',
-      icon: <Users size={18} />,
-      path: '/account/user-list',
     },
   ];
 
@@ -47,20 +42,28 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Bottom - Profile & Logout */}
-      <div className="px-4 py-6 border-t border-blue-700 flex flex-col gap-2">
+      <div className="px-4 py-2 border-t border-blue-700 flex flex-col">
         <Link
-          href="/account/profile"
+          href={`/account/profile`}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-500 transition"
         >
           <UserCircle size={18} />
           My Profile
         </Link>
+        <Link
+          href={`/account/change-password`}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-500 transition"
+        >
+          <RiLockPasswordFill size={18} />
+          Change Password
+        </Link>
         <button
+          type="button"
           onClick={() => {
             // Call your logout logic here
             console.log('Logging out...');
           }}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-500 transition"
+          className="flex items-center cursor-pointer gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-500 transition"
         >
           <LogOut size={18} />
           Logout

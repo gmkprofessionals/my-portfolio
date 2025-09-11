@@ -26,7 +26,8 @@ const Tiptap = ({ onContentChange, initialContent }: TiptapProps) => {
         types: ['heading', 'paragraph'],
       }),
     ],
-    content: initialContent || '<p>Hello World! 🌎️</p>',
+    content: initialContent || '',
+    immediatelyRender: false,
     editorProps: {
       attributes: {
         class:

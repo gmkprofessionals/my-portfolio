@@ -2,8 +2,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState } from "react";
+import { useParams } from "next/navigation";
 
 const ChangePassword = () => {
+  const params = useParams();
+  const id = params?.UsrId as string; // profile id from route
 
   const [form, setForm] = useState({
     oldPass: "",
@@ -23,28 +26,33 @@ const ChangePassword = () => {
     setMessage("");
 
     if (form.newPass !== form.confPass) {
-      setMessage("New password and confirm password do not match ❌");
+      setMessage("New password and confirm password do not match");
       return;
     }
 
     setLoading(true);
 
     try {
-      const res = await fetch("/api/profile/change-password", {
-        method: "POST",
+      const res = await fetch("/api/profile", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          userId: id, // from route
+          oldPassword: form.oldPass, // map to API field
+          newPassword: form.newPass,
+          confirmPassword: form.confPass,
+        }),
       });
 
       const data = await res.json();
       if (res.ok) {
-        setMessage("Password changed successfully ✅");
+        setMessage("Password changed successfully");
         setForm({ oldPass: "", newPass: "", confPass: "" });
       } else {
-        setMessage(data.error || "Something went wrong ❌");
+        setMessage(data.error || "Something went wrong");
       }
-    } catch (error:any) {
-      setMessage("Server error ❌");
+    } catch (error: any) {
+      setMessage("Server error");
     } finally {
       setLoading(false);
     }
@@ -52,10 +60,10 @@ const ChangePassword = () => {
 
   return (
     <div className="flex items-center justify-center ">
-        <div className="flex flex-col w-[350px] my-56 p-9 border border-blue-800 rounded-md shadow-xl">
+      <div className="flex flex-col w-[350px] my-56 p-9 border border-blue-800 rounded-md shadow-xl">
         <h2 className="text-xl font-semibold mb-4">Change Password</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-            <input
+          <input
             type="password"
             name="oldPass"
             placeholder="Old Password"
@@ -63,9 +71,9 @@ const ChangePassword = () => {
             onChange={handleChange}
             className="inputBox w-full"
             required
-            />
+          />
 
-            <input
+          <input
             type="password"
             name="newPass"
             placeholder="New Password"
@@ -73,9 +81,9 @@ const ChangePassword = () => {
             onChange={handleChange}
             className="inputBox w-full"
             required
-            />
+          />
 
-            <input
+          <input
             type="password"
             name="confPass"
             placeholder="Confirm New Password"
@@ -83,19 +91,15 @@ const ChangePassword = () => {
             onChange={handleChange}
             className="inputBox w-full"
             required
-            />
+          />
 
-            <button
-            type="submit"
-            disabled={loading}
-            className="btnLeft w-full"
-            >
+          <button type="submit" disabled={loading} className="btnLeft w-full">
             {loading ? "Updating..." : "Update Password"}
-            </button>
+          </button>
         </form>
 
         {message && <p className="mt-4 text-center">{message}</p>}
-        </div>
+      </div>
     </div>
   );
 };

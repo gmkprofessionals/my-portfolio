@@ -12,12 +12,12 @@ interface DelCatParams {
     }>;
 }
 
-const PublishBlog: React.FC<DelCatParams> = ({ params }): JSX.Element => {    
+const UnPublishBlog: React.FC<DelCatParams> = ({ params }): JSX.Element => {    
     const router = useRouter();
     const { BlgId } = use(params);
     const [isSaving, setIsSaving] = useState<boolean>(false);
-    
-    const handlePublishBlog = async (): Promise<void> => {
+
+    const handleUnPublishBlog = async (): Promise<void> => {
       setIsSaving(true);
         try {
             const res = await fetch(`/api/blogs/${BlgId}`, {
@@ -25,7 +25,7 @@ const PublishBlog: React.FC<DelCatParams> = ({ params }): JSX.Element => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ isPublished: true }),
+              body: JSON.stringify({ isPublished: false }),
             });
 
             const post = await res.json();
@@ -36,7 +36,7 @@ const PublishBlog: React.FC<DelCatParams> = ({ params }): JSX.Element => {
                 router.push('/account/blog-list');
             }
         } catch (error:any) {
-            toast.error("Blog publishing failed.");
+            toast.error("Blog un-publishing failed.");
         } finally {
           setIsSaving(false);
         }
@@ -49,11 +49,11 @@ const PublishBlog: React.FC<DelCatParams> = ({ params }): JSX.Element => {
                     <div className="flex flex-col items-center">
                         <h1 className="text-3xl p-3 text-center text-yellow-600 font-semibold">Warning !</h1>
                         <p className="text-center">
-                            Are you sure you want to publish this blog?
+                            Are you sure you want to un-publish this blog?
                         </p>
                     </div>
                     <div className="flex gap-1">
-                        <button type="button" onClick={handlePublishBlog} className="btnLeft w-full" disabled={isSaving}>
+                        <button type="button" onClick={handleUnPublishBlog} className="btnLeft w-full" disabled={isSaving}>
                             {isSaving ? "Confirming..." : "Confirm"}
                         </button>
                         <button type="button" onClick={() => router.push('/account/blog-list')} className="btnRight w-full">Cancel</button>
@@ -64,4 +64,4 @@ const PublishBlog: React.FC<DelCatParams> = ({ params }): JSX.Element => {
     );
 }
 
-export default PublishBlog;
+export default UnPublishBlog;

@@ -44,14 +44,14 @@ const Sidebar: React.FC = () => {
       {/* Bottom - Profile & Logout */}
       <div className="px-4 py-2 border-t border-blue-700 flex flex-col">
         <Link
-          href={`/account/profile`}
+          href={`/account/profile/68b9bbca9e1e1abc09f2376f`}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-500 transition"
         >
           <UserCircle size={18} />
           My Profile
         </Link>
         <Link
-          href={`/account/change-password`}
+          href={`/account/change-password/68b9bbca9e1e1abc09f2376f`}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-500 transition"
         >
           <RiLockPasswordFill size={18} />

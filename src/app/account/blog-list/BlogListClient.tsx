@@ -91,8 +91,8 @@ const BlogListClient: React.FC = () => {
                   </td>
                   <td className="p-2 border space-x-2">
                     <Link href={`/account/blog-list/${blog._id}/edit-blog`} className="text-yellow-600 underline">Edit</Link>
-                    <Link href={`/account/blog-list${blog._id}/publish-blog`} className="text-green-600 underline">Publish</Link>
-                    <Link href={`/account/blog-list${blog._id}/delete-blog`} className="text-red-600 underline">Delete</Link>
+                    <Link href={`/account/blog-list/${blog._id}/${blog.isPublished ? 'unpublish-blog' : 'publish-blog'}`} className="text-green-600 underline">{blog.isPublished ? 'Unpublish' : 'Publish'}</Link>
+                    <Link href={`/account/blog-list/${blog._id}/delete-blog`} className="text-red-600 underline">Delete</Link>
                   </td>
                 </tr>
               ))}

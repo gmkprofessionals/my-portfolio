@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import Container from '../components/Container';
 import Tiptap from '../components/TiptapEditor/TipTap';
 
@@ -165,6 +165,7 @@ export default function WriteBlog() {
           </div>
         </form>
       </Container>
+      <Toaster position="top-right" reverseOrder={false} />
     </div>
   );
 }

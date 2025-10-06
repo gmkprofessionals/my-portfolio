@@ -14,10 +14,10 @@ const servicesList = [
   { name: "ROC Services", url: "/roc-services" },
   { name: "SEBI Services", url: "/sebi-services" },
   { name: "Other Services", url: "/other-services" },
-  { name: "Other Compliance", url: "/other-compliance" }
+  { name: "Other Compliance", url: "/other-compliance" },
 ];
 
-const NavBar: React.FC = () => {
+const NavBar: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
 
@@ -38,73 +38,77 @@ const NavBar: React.FC = () => {
           </div>
 
           {/* Desktop Menu */}
-          <ul className="hidden md:flex space-x-6 items-center font-medium text-gray-700">
-            <li>
-              <Link
-                href="/"
-                className="hover:bg-blue-700 hover:text-white px-3 py-1 rounded transition-colors"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/about"
-                className="hover:bg-blue-700 hover:text-white px-3 py-1 rounded transition-colors"
-              >
-                About
-              </Link>
-            </li>
+          {!isLoggedIn && (
+            <>
+              <ul className="hidden md:flex space-x-6 items-center font-medium text-gray-700">
+                <li>
+                  <Link
+                    href="/"
+                    className="hover:bg-blue-700 hover:text-white px-3 py-1 rounded transition-colors"
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/about"
+                    className="hover:bg-blue-700 hover:text-white px-3 py-1 rounded transition-colors"
+                  >
+                    About
+                  </Link>
+                </li>
 
-            {/* Services Dropdown */}
-            <li className="relative group">
-              <div className="flex items-center gap-1 px-3 py-1 rounded cursor-pointer hover:bg-blue-700 hover:text-white transition-colors">
-                Services
-                <FaChevronDown className="text-sm mt-0.5 transition-transform duration-200 group-hover:rotate-180" />
-              </div>
+                {/* Services Dropdown */}
+                <li className="relative group">
+                  <div className="flex items-center gap-1 px-3 py-1 rounded cursor-pointer hover:bg-blue-700 hover:text-white transition-colors">
+                    Services
+                    <FaChevronDown className="text-sm mt-0.5 transition-transform duration-200 group-hover:rotate-180" />
+                  </div>
 
-              <ul className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md py-2 z-50 opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 group-hover:translate-y-0 translate-y-2">
-                {servicesList.map((service, index) => (
-                  <li key={index}>
-                    <Link
-                      href={service.url}
-                      className="block px-4 py-2 hover:bg-blue-50 text-sm text-gray-700"
-                    >
-                      {service.name}
-                    </Link>
-                  </li>
-                ))}
+                  <ul className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md py-2 z-50 opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 group-hover:translate-y-0 translate-y-2">
+                    {servicesList.map((service, index) => (
+                      <li key={index}>
+                        <Link
+                          href={service.url}
+                          className="block px-4 py-2 hover:bg-blue-50 text-sm text-gray-700"
+                        >
+                          {service.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+
+                <li>
+                  <Link
+                    href="/blogs"
+                    className="hover:bg-blue-700 hover:text-white px-3 py-1 rounded transition-colors"
+                  >
+                    Blogs
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/contact"
+                    className="hover:bg-blue-700 hover:text-white px-3 py-1 rounded transition-colors"
+                  >
+                    Contact
+                  </Link>
+                </li>
               </ul>
-            </li>
 
-            <li>
-              <Link
-                href="/blogs"
-                className="hover:bg-blue-700 hover:text-white px-3 py-1 rounded transition-colors"
-              >
-                Blogs
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/contact"
-                className="hover:bg-blue-700 hover:text-white px-3 py-1 rounded transition-colors"
-              >
-                Contact
-              </Link>
-            </li>
-          </ul>
-
-          {/* Hamburger Icon */}
-          <div className="md:hidden">
-            <button
-              type="button"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-2xl text-gray-700 focus:outline-none"
-            >
-              {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
-            </button>
-          </div>
+              {/* Hamburger Icon */}
+              <div className="md:hidden">
+                <button
+                  type="button"
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="text-2xl text-gray-700 focus:outline-none"
+                >
+                  {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu */}

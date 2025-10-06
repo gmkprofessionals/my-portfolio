@@ -5,6 +5,8 @@ import NavBar from "@/app/components/NavBar";
 import GoogleAnalytics from "@/app/components/GoogleAnalytics";
 import WhatsAppWidget from "@/app/components/WhatsAppWidget";
 import { Analytics } from "@vercel/analytics/next";
+import { cookies } from "next/headers";
+import { jwtVerify } from "jose"
 
 const oswald = Oswald({ subsets: ["latin"], variable: "--font-oswald" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -93,15 +95,32 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
+const secret = new TextEncoder().encode(process.env.JWT_SECRET as string);
+
+async function isLoggedIn() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+  if (!token) return false;
+
+  try {
+    await jwtVerify(token, secret);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export default async function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
+  const loggedIn = await isLoggedIn();
+
   return (
     <html lang="en" className={`${oswald.variable} ${inter.variable}`}>
       <body >
-        <NavBar />
+        <NavBar isLoggedIn={loggedIn} />
         {children} 
         <Analytics /> 
         <GoogleAnalytics />
-        <WhatsAppWidget />
+        {!loggedIn && <WhatsAppWidget />}
         <div className="bg-white text-gray-600 font-bold text-sm text-center py-3"> 
             © {new Date().getFullYear()} Gourav Saraf | Practicing Company Secratory
             . All rights reserved.

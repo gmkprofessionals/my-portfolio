@@ -3,10 +3,30 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutList,  UserCircle, LogOut } from 'lucide-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Sidebar: React.FC = () => {
   const pathname = usePathname();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const res = await fetch("/api/auth/logged-in-user");
+        if (res.ok) {
+          const data = await res.json();
+          setUserId(data.userId);
+        } else {
+          setUserId(null);
+        }
+      } catch (err) {
+        console.error("Error fetching user ID:", err);
+        setUserId(null);
+      }
+    };
+
+    fetchUserId();
+  }, []);
 
   const menuItems = [
     {
@@ -30,7 +50,7 @@ const Sidebar: React.FC = () => {
                 key={item.path}
                 href={item.path}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-500 hover:text-white transition ${
-                  isActive ? 'bg-blue-500 text-white' : 'text-white'
+                  isActive ? "bg-blue-500 text-white" : "text-white"
                 }`}
               >
                 {item.icon}
@@ -44,14 +64,14 @@ const Sidebar: React.FC = () => {
       {/* Bottom - Profile & Logout */}
       <div className="px-4 py-2 border-t border-blue-700 flex flex-col">
         <Link
-          href={`/account/profile/68b9bbca9e1e1abc09f2376f`}
+          href={`/account/profile/${userId}`}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-500 transition"
         >
           <UserCircle size={18} />
           My Profile
         </Link>
         <Link
-          href={`/account/change-password/68b9bbca9e1e1abc09f2376f`}
+          href={`/account/change-password/${userId}`}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-500 transition"
         >
           <RiLockPasswordFill size={18} />
@@ -59,9 +79,21 @@ const Sidebar: React.FC = () => {
         </Link>
         <button
           type="button"
-          onClick={() => {
-            // Call your logout logic here
-            console.log('Logging out...');
+          onClick={async () => {
+            try {
+              const res = await fetch("/api/auth/logout", {
+                method: "POST",
+              });
+
+              if (res.ok) {
+                // redirect to login after successful logout
+                window.location.href = "/login";
+              } else {
+                console.error("Logout failed");
+              }
+            } catch (err) {
+              console.error("Error logging out:", err);
+            }
           }}
           className="flex items-center cursor-pointer gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-500 transition"
         >

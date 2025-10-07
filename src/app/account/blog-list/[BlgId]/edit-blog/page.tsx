@@ -1,17 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Loader from "@/app/account/Loader";
 import toast from "react-hot-toast";
 import Tiptap from "@/app/components/TiptapEditor/TipTap";
-
-interface IParamsBlog {
-  params: {
-    BlgId: string;
-  };
-}
 
 interface BlogFormData {
   title: string;
@@ -21,9 +14,9 @@ interface BlogFormData {
   featuredImage: string;
 }
 
-const EditBlog: React.FC<IParamsBlog> = ({ params }) => {
+const EditBlog: React.FC = () => {
   const router = useRouter();
-  const { BlgId } = params;
+  const { BlgId } = useParams() as { BlgId: string };
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -208,7 +201,7 @@ const EditBlog: React.FC<IParamsBlog> = ({ params }) => {
         </div>
 
         {/* Form Fields */}
-        {["title", "slug", "category", "tags"].map((field) => (
+        {(["title", "slug", "category", "tags"] as (keyof BlogFormData)[]).map((field) => (
           <div key={field} className="w-full">
             <input
               type="text"
@@ -219,7 +212,7 @@ const EditBlog: React.FC<IParamsBlog> = ({ params }) => {
                   : field.charAt(0).toUpperCase() + field.slice(1)
               }
               className="w-full p-2 border border-blue-500 rounded bg-white"
-              value={(formData as any)[field]}
+              value={formData[field]}
               onChange={handleChange}
               required={field !== "tags"}
             />

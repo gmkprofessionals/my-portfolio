@@ -31,12 +31,7 @@ const getBlogBySlug = async (slug: string): Promise<Blog | null> => {
   }
 };
 
-export default async function BlogDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = params;
+async function BlogContent({ slug }: { slug: string }) {
   const blog = await getBlogBySlug(slug);
 
   if (!blog) return notFound();
@@ -91,4 +86,15 @@ export default async function BlogDetailPage({
       </Container>
     </div>
   );
+}
+
+interface BlogDetailPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default function BlogDetailPage(props: unknown) {
+  const { params } = props as BlogDetailPageProps;
+  return <BlogContent slug={params.slug} />;
 }

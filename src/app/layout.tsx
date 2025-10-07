@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   ],
   authors: [
     {
-      name: "Deepak Singh",
+      name: "Gourav Saraf",
       url: "https://www.webdeveloperdeepak.com",
     },
   ],

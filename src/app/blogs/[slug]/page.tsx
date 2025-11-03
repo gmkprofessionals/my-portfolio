@@ -15,7 +15,7 @@ interface Blog {
 const getBlogBySlug = async (slug: string): Promise<Blog | null> => {
   try {
     const res = await fetch(
-      `/api/blogs?slug=${slug}`,
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?slug=${slug}`,
       {
         cache: "no-store",
       }
